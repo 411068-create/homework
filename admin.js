@@ -13,7 +13,7 @@ class IdiomManager {
     }
 
     loadIdioms() {
-        const saved = localStorage.getItem('idioms');
+        var saved = localStorage.getItem('idioms');
         this.idioms = saved ? JSON.parse(saved) : [];
     }
 
@@ -22,38 +22,39 @@ class IdiomManager {
     }
 
     setupEventListeners() {
-        const addForm = document.getElementById('addForm');
-        const autoFillBtn = document.getElementById('autoFillBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
+        var self = this;
+        var addForm = document.getElementById('addForm');
+        var autoFillBtn = document.getElementById('autoFillBtn');
+        var cancelBtn = document.getElementById('cancelBtn');
 
         if (addForm) {
-            addForm.addEventListener('submit', (e) => {
+            addForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                this.addIdiom();
+                self.addIdiom();
             });
         }
 
         if (autoFillBtn) {
-            autoFillBtn.addEventListener('click', () => {
-                this.autoFillMeaning();
+            autoFillBtn.addEventListener('click', function() {
+                self.autoFillMeaning();
             });
         }
 
         if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                this.cancelEdit();
+            cancelBtn.addEventListener('click', function() {
+                self.cancelEdit();
             });
         }
     }
 
     addIdiom() {
-        const idiomInput = document.getElementById('idiomInput');
-        const meaningInput = document.getElementById('meaningInput');
-        const form = document.getElementById('addForm');
-        const isEditMode = form.dataset.editMode;
+        var idiomInput = document.getElementById('idiomInput');
+        var meaningInput = document.getElementById('meaningInput');
+        var form = document.getElementById('addForm');
+        var isEditMode = form.dataset.editMode;
 
-        const idiom = idiomInput.value.trim();
-        const meaning = meaningInput.value.trim();
+        var idiom = idiomInput.value.trim();
+        var meaning = meaningInput.value.trim();
 
         if (!idiom) {
             this.showNotification('請輸入成語', 'error');
@@ -66,8 +67,7 @@ class IdiomManager {
         }
 
         if (isEditMode) {
-            // 編輯模式
-            const itemIndex = this.idioms.findIndex(item => item.idiom === isEditMode);
+            var itemIndex = this.idioms.findIndex(function(item) { return item.idiom === isEditMode; });
             if (itemIndex !== -1) {
                 this.idioms[itemIndex].meaning = meaning;
                 this.saveIdioms();
@@ -76,9 +76,7 @@ class IdiomManager {
                 form.removeAttribute('data-edit-mode');
             }
         } else {
-            // 新增模式
-            // 檢查是否已存在
-            if (this.idioms.some(item => item.idiom === idiom)) {
+            if (this.idioms.some(function(item) { return item.idiom === idiom; })) {
                 this.showNotification('此成語已存在', 'error');
                 return;
             }
@@ -94,21 +92,20 @@ class IdiomManager {
             this.showNotification('成語新增成功！', 'success');
         }
 
-        // 清空表單
         idiomInput.value = '';
         meaningInput.value = '';
         idiomInput.focus();
         
-        // 重置按鈕文本
-        const submitBtn = form.querySelector('button[type="submit"]');
+        var submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.textContent = '➕ 新增成語';
         }
     }
 
     deleteIdiom(idiom) {
-        if (confirm(`確定要刪除 "${idiom}" 嗎？`)) {
-            this.idioms = this.idioms.filter(item => item.idiom !== idiom);
+        var self = this;
+        if (confirm('確定要刪除 "' + idiom + '" 嗎？')) {
+            this.idioms = this.idioms.filter(function(item) { return item.idiom !== idiom; });
             this.saveIdioms();
             this.renderList();
             this.showNotification('成語已刪除', 'success');
@@ -116,19 +113,17 @@ class IdiomManager {
     }
 
     editIdiom(idiom) {
-        const item = this.idioms.find(i => i.idiom === idiom);
+        var item = this.idioms.find(function(i) { return i.idiom === idiom; });
         if (item) {
             document.getElementById('idiomInput').value = item.idiom;
             document.getElementById('meaningInput').value = item.meaning;
             document.getElementById('idiomInput').focus();
             
-            // 標記為編輯模式
-            const form = document.getElementById('addForm');
+            var form = document.getElementById('addForm');
             form.dataset.editMode = idiom;
             
-            // 更新按鈕文本
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const cancelBtn = document.getElementById('cancelBtn');
+            var submitBtn = form.querySelector('button[type="submit"]');
+            var cancelBtn = document.getElementById('cancelBtn');
             if (submitBtn) {
                 submitBtn.textContent = '✏️ 更新成語';
             }
@@ -136,27 +131,23 @@ class IdiomManager {
                 cancelBtn.style.display = 'block';
             }
             
-            // 禁用成語輸入框（避免修改成語名稱）
             document.getElementById('idiomInput').disabled = true;
             document.getElementById('idiomInput').title = '編輯模式下無法修改成語名稱，請刪除後重新新增';
         }
     }
 
     cancelEdit() {
-        const form = document.getElementById('addForm');
+        var form = document.getElementById('addForm');
         form.removeAttribute('data-edit-mode');
         
-        // 清空表單
         document.getElementById('idiomInput').value = '';
         document.getElementById('meaningInput').value = '';
         
-        // 恢復成語輸入框
         document.getElementById('idiomInput').disabled = false;
         document.getElementById('idiomInput').title = '';
         
-        // 更新按鈕
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const cancelBtn = document.getElementById('cancelBtn');
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var cancelBtn = document.getElementById('cancelBtn');
         if (submitBtn) {
             submitBtn.textContent = '➕ 新增成語';
         }
@@ -168,31 +159,40 @@ class IdiomManager {
     }
 
     renderList() {
-        const listContainer = document.getElementById('idiomList');
+        var listContainer = document.getElementById('idiomList');
+        var self = this;
         
         if (this.idioms.length === 0) {
             listContainer.innerHTML = '<p class="empty-message">還沒有任何成語</p>';
             return;
         }
 
-        listContainer.innerHTML = this.idioms.map((item, index) => `
-            <div class="idiom-item">
-                <div class="idiom-item-content">
-                    <div class="idiom-item-title">${this.escapeHtml(item.idiom)}</div>
-                    <div class="idiom-item-meaning">${this.escapeHtml(item.meaning)}</div>
-                    <div class="source-text">來源: ${item.source}</div>
-                </div>
-                <div class="idiom-item-actions">
-                    <button class="btn btn-secondary" onclick="manager.editIdiom('${this.escapeHtml(item.idiom, true)}')">✏️ 編</button>
-                    <button class="btn btn-danger" onclick="manager.deleteIdiom('${this.escapeHtml(item.idiom, true)}')">🗑️ 刪</button>
-                </div>
-            </div>
-        `).join('');
+        var html = '';
+        for (var i = 0; i < this.idioms.length; i++) {
+            var item = this.idioms[i];
+            var escapedIdiom = this.escapeHtml(item.idiom);
+            var escapedIdiomAttr = this.escapeHtml(item.idiom, true);
+            var escapedMeaning = this.escapeHtml(item.meaning);
+            
+            html += '<div class="idiom-item">' +
+                '<div class="idiom-item-content">' +
+                '<div class="idiom-item-title">' + escapedIdiom + '</div>' +
+                '<div class="idiom-item-meaning">' + escapedMeaning + '</div>' +
+                '<div class="source-text">來源: ' + item.source + '</div>' +
+                '</div>' +
+                '<div class="idiom-item-actions">' +
+                '<button class="btn btn-secondary" onclick="manager.editIdiom(\'' + escapedIdiomAttr + '\')">✏️ 編</button>' +
+                '<button class="btn btn-danger" onclick="manager.deleteIdiom(\'' + escapedIdiomAttr + '\')">🗑️ 刪</button>' +
+                '</div>' +
+                '</div>';
+        }
+        
+        listContainer.innerHTML = html;
     }
 
     async autoFillMeaning() {
-        const idiomInput = document.getElementById('idiomInput');
-        const idiom = idiomInput.value.trim();
+        var idiomInput = document.getElementById('idiomInput');
+        var idiom = idiomInput.value.trim();
 
         if (!idiom) {
             this.showNotification('請先輸入成語', 'error');
@@ -202,7 +202,7 @@ class IdiomManager {
         this.showNotification('正在查詢成語解釋...', 'loading');
 
         try {
-            const meaning = await this.fetchIdiomMeaning(idiom);
+            var meaning = await this.fetchIdiomMeaning(idiom);
             if (meaning) {
                 document.getElementById('meaningInput').value = meaning;
                 this.showNotification('成語解釋已自動填入', 'success');
@@ -216,13 +216,10 @@ class IdiomManager {
     }
 
     async fetchIdiomMeaning(idiom) {
-        // 使用多個 API 源的備份策略
-
-        // 方案 1: 使用免費的成語 API (如果可用)
         try {
-            const response = await fetch(`https://api.api-ninjas.com/v1/idiom?name=${encodeURIComponent(idiom)}`);
+            var response = await fetch('https://api.api-ninjas.com/v1/idiom?name=' + encodeURIComponent(idiom));
             if (response.ok) {
-                const data = await response.json();
+                var data = await response.json();
                 if (data && data[0] && data[0].definition) {
                     return data[0].definition;
                 }
@@ -231,36 +228,15 @@ class IdiomManager {
             console.log('方案 1 失敗');
         }
 
-        // 方案 2: 使用本地成語數據庫
-        const localDatabase = await this.getLocalIdiomDatabase();
+        var localDatabase = await this.getLocalIdiomDatabase();
         if (localDatabase[idiom]) {
             return localDatabase[idiom];
-        }
-
-        // 方案 3: 使用中文 NLP API (如果有 API Key)
-        try {
-            const response = await fetch('https://api.pullopen.com/idiom/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ word: idiom })
-            });
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.data && data.data.meaning) {
-                    return data.data.meaning;
-                }
-            }
-        } catch (e) {
-            console.log('方案 3 失敗');
         }
 
         return null;
     }
 
     async getLocalIdiomDatabase() {
-        // 本地成語數據庫，包含常見的 100+ 個成語
         return {
             '臥虎藏龍': '比喻文人倜儻不羈，懷才不遇。',
             '厚積薄發': '底蘊深厚，但表現樸素；也指做了充分的準備，就有豐碩的收果。',
@@ -281,7 +257,6 @@ class IdiomManager {
             '砥礪前行': '互相勉勵，克服困難繼續前進。',
             '披荊斬棘': '開闢道路，克服困難。',
             '勤能補拙': '勤勉能夠彌補先天的不足。',
-            '厚積薄發': '基礎深厚，後發製人。',
             '心如止水': '心境平靜如水，不為外物所動。',
             '靜水深流': '沉著冷靜，內藏深度。',
             '大器晚成': '大的器物需要較長時間才能完成，比喻人才大器晚成。',
@@ -317,52 +292,40 @@ class IdiomManager {
             '蒸蒸日上': '一天天向上發展。',
             '欣欣向榮': '生機勃勃，興旺發達。',
             '鵬程萬里': '比喻前程遠大。',
-            '前景光明': '未來很有希望。',
-            '美不勝收': '美到難以形容。',
-            '妙趣橫生': '充滿了有趣的內容。',
-            '異彩紛呈': '各種精彩的色彩紛紛出現。',
-            '琳琅滿目': '各種珍奇的東西到處都是。',
-            '千姿百態': '各種各樣的姿態。',
-            '五光十色': '色彩鮮豔，光彩奪目。',
-            '春風化雨': '溫和地感化人，比喻無聲的教育。',
-            '和風細雨': '溫和文雅的樣子。',
-            '風和日麗': '天氣晴朗溫暖。',
-            '艷陽高照': '陽光明媚。',
-            '天朗氣清': '天氣晴朗，空氣清新。',
-            '山河壯麗': '山水風景壯觀優美。',
-            '秀外慧中': '外表優美，內心聰慧。',
-            '氣質不凡': '具有不同尋常的氣質。'
+            '前景光明': '未來很有希望。'
         };
     }
 
-    showNotification(message, type = 'success') {
-        const notification = document.getElementById('notification');
+    showNotification(message, type) {
+        type = type || 'success';
+        var notification = document.getElementById('notification');
         notification.textContent = message;
-        notification.className = `notification ${type} show`;
+        notification.className = 'notification ' + type + ' show';
 
-        setTimeout(() => {
+        setTimeout(function() {
             notification.classList.remove('show');
         }, 3000);
     }
 
-    escapeHtml(text, forAttribute = false) {
+    escapeHtml(text, forAttribute) {
         if (forAttribute) {
             return text.replace(/\\/g, '\\\\')
                        .replace(/'/g, "\\'")
                        .replace(/"/g, '\\"')
                        .replace(/\n/g, '\\n');
         }
-        const div = document.createElement('div');
+        var div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 }
 
-// 等待 DOM 完全加載後初始化應用
+var manager;
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        const manager = new IdiomManager();
+    document.addEventListener('DOMContentLoaded', function() {
+        manager = new IdiomManager();
     });
 } else {
-    const manager = new IdiomManager();
+    manager = new IdiomManager();
 }

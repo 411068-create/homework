@@ -15,7 +15,7 @@ class IdiomCardApp {
     }
 
     loadIdioms() {
-        const saved = localStorage.getItem('idioms');
+        var saved = localStorage.getItem('idioms');
         this.idioms = saved ? JSON.parse(saved) : this.getDefaultIdioms();
     }
 
@@ -30,88 +30,119 @@ class IdiomCardApp {
     }
 
     setupEventListeners() {
-        const card = document.getElementById('card');
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        var self = this;
+        var card = document.getElementById('card');
+        var nextBtn = document.getElementById('nextBtn');
+        var prevBtn = document.getElementById('prevBtn');
+        var shuffleBtn = document.getElementById('shuffleBtn');
+        var resetBtn = document.getElementById('resetBtn');
 
-        // 卡片翻轉
         if (card) {
-            card.addEventListener('click', () => this.flipCard());
+            card.addEventListener('click', function() {
+                self.flipCard();
+            });
         }
 
-        // 翻頁按鈕
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextCard());
+            nextBtn.addEventListener('click', function() {
+                self.nextCard();
+            });
         }
+
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prevCard());
+            prevBtn.addEventListener('click', function() {
+                self.prevCard();
+            });
         }
 
-        // 控制按鈕
         if (shuffleBtn) {
-            shuffleBtn.addEventListener('click', () => this.shuffle());
-        }
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => this.reset());
+            shuffleBtn.addEventListener('click', function() {
+                self.shuffle();
+            });
         }
 
-        // 鍵盤快捷鍵
-        document.addEventListener('keydown', (e) => {
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                self.reset();
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
             if (e.key === ' ') {
                 e.preventDefault();
-                this.flipCard();
+                self.flipCard();
             } else if (e.key === 'ArrowRight') {
-                this.nextCard();
+                self.nextCard();
             } else if (e.key === 'ArrowLeft') {
-                this.prevCard();
+                self.prevCard();
             }
         });
     }
 
     displayCard() {
-        const cardContainer = document.querySelector('.card-container');
-        const controls = document.querySelector('.controls');
-        const cardInfo = document.querySelector('.card-info');
-        const emptyState = document.getElementById('emptyState');
+        var cardContainer = document.querySelector('.card-container');
+        var controls = document.querySelector('.controls');
+        var cardInfo = document.querySelector('.card-info');
+        var emptyState = document.getElementById('emptyState');
 
         if (this.idioms.length === 0) {
-            if (cardContainer) cardContainer.style.display = 'none';
-            if (controls) controls.style.display = 'none';
-            if (cardInfo) cardInfo.style.display = 'none';
-            if (emptyState) emptyState.style.display = 'block';
+            if (cardContainer) {
+                cardContainer.style.display = 'none';
+            }
+            if (controls) {
+                controls.style.display = 'none';
+            }
+            if (cardInfo) {
+                cardInfo.style.display = 'none';
+            }
+            if (emptyState) {
+                emptyState.style.display = 'block';
+            }
             return;
         }
 
-        if (cardContainer) cardContainer.style.display = 'block';
-        if (controls) controls.style.display = 'flex';
-        if (cardInfo) cardInfo.style.display = 'block';
-        if (emptyState) emptyState.style.display = 'none';
+        if (cardContainer) {
+            cardContainer.style.display = 'block';
+        }
+        if (controls) {
+            controls.style.display = 'flex';
+        }
+        if (cardInfo) {
+            cardInfo.style.display = 'block';
+        }
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
 
-        const current = this.idioms[this.currentIndex];
-        const idiomEl = document.getElementById('idiom');
-        const meaningEl = document.getElementById('meaning');
-        const cardCounterEl = document.getElementById('cardCounter');
-        const cardSourceEl = document.getElementById('cardSource');
+        var current = this.idioms[this.currentIndex];
+        var idiomEl = document.getElementById('idiom');
+        var meaningEl = document.getElementById('meaning');
+        var cardCounterEl = document.getElementById('cardCounter');
+        var cardSourceEl = document.getElementById('cardSource');
 
-        if (idiomEl) idiomEl.textContent = current.idiom;
-        if (meaningEl) meaningEl.textContent = current.meaning;
-        if (cardCounterEl) cardCounterEl.textContent = `${this.currentIndex + 1} / ${this.idioms.length}`;
+        if (idiomEl) {
+            idiomEl.textContent = current.idiom;
+        }
+        if (meaningEl) {
+            meaningEl.textContent = current.meaning;
+        }
+        if (cardCounterEl) {
+            cardCounterEl.textContent = (this.currentIndex + 1) + ' / ' + this.idioms.length;
+        }
 
         if (current.source && cardSourceEl) {
-            cardSourceEl.textContent = `來源: ${current.source}`;
+            cardSourceEl.textContent = '來源: ' + current.source;
         }
 
         this.isFlipped = false;
-        const card = document.getElementById('card');
+        var card = document.getElementById('card');
         if (card) {
             card.classList.remove('flipped');
         }
     }
 
     flipCard() {
-        const card = document.getElementById('card');
+        var card = document.getElementById('card');
         if (card) {
             card.classList.toggle('flipped');
             this.isFlipped = !this.isFlipped;
@@ -119,23 +150,31 @@ class IdiomCardApp {
     }
 
     nextCard() {
-        if (this.idioms.length === 0) return;
+        if (this.idioms.length === 0) {
+            return;
+        }
         this.currentIndex = (this.currentIndex + 1) % this.idioms.length;
         this.displayCard();
     }
 
     prevCard() {
-        if (this.idioms.length === 0) return;
+        if (this.idioms.length === 0) {
+            return;
+        }
         this.currentIndex = (this.currentIndex - 1 + this.idioms.length) % this.idioms.length;
         this.displayCard();
     }
 
     shuffle() {
-        if (this.idioms.length === 0) return;
+        if (this.idioms.length === 0) {
+            return;
+        }
         // Fisher-Yates 洗牌算法
-        for (let i = this.idioms.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.idioms[i], this.idioms[j]] = [this.idioms[j], this.idioms[i]];
+        for (var i = this.idioms.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = this.idioms[i];
+            this.idioms[i] = this.idioms[j];
+            this.idioms[j] = temp;
         }
         this.currentIndex = 0;
         this.displayCard();
@@ -146,22 +185,22 @@ class IdiomCardApp {
         this.displayCard();
     }
 
-    // 監聽 storage 事件，當其他頁面修改數據時更新
     static setupStorageListener(app) {
-        window.addEventListener('storage', () => {
+        window.addEventListener('storage', function() {
             app.loadIdioms();
             app.displayCard();
         });
     }
 }
 
-// 等待 DOM 完全加載後初始化應用
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        const app = new IdiomCardApp();
-        IdiomCardApp.setupStorageListener(app);
-    });
-} else {
-    const app = new IdiomCardApp();
+// 初始化應用
+function initApp() {
+    var app = new IdiomCardApp();
     IdiomCardApp.setupStorageListener(app);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
 }
