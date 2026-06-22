@@ -1,5 +1,8 @@
 // 成語管理應用 - 管理頁面邏輯
 
+// 將此處替換為你部署的 GAS web app URL
+var GAS_WEBAPP_URL = 'REPLACE_WITH_YOUR_GAS_WEBAPP_URL';
+
 class IdiomManager {
     constructor() {
         this.idioms = [];
@@ -19,6 +22,29 @@ class IdiomManager {
 
     saveIdioms() {
         localStorage.setItem('idioms', JSON.stringify(this.idioms));
+    }
+
+    // 將新增的成語推送到後端（Google Apps Script）
+    sendToGAS(idiom, meaning) {
+        if (!GAS_WEBAPP_URL || GAS_WEBAPP_URL.indexOf('REPLACE_WITH') === 0) return;
+        try {
+            fetch(GAS_WEBAPP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idiom: idiom, meaning: meaning })
+            }).then(function(resp) {
+                // 可選：檢查回應
+                return resp.json();
+            }).then(function(data) {
+                console.log('GAS 回應：', data);
+            }).catch(function(err) {
+                console.warn('發送到 GAS 失敗：', err);
+            });
+        } catch (e) {
+            console.warn('sendToGAS 錯誤：', e);
+        }
     }
 
     setupEventListeners() {
@@ -90,6 +116,8 @@ class IdiomManager {
             this.saveIdioms();
             this.renderList();
             this.showNotification('成語新增成功！', 'success');
+            // 非同步推送到後端（如果有設定 GAS_WEBAPP_URL）
+            try { this.sendToGAS(idiom, meaning); } catch (e) { console.warn(e); }
         }
 
         idiomInput.value = '';
