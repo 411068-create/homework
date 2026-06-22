@@ -1,7 +1,7 @@
 // 成語管理應用 - 管理頁面邏輯
 
 // 將此處替換為你部署的 GAS web app URL
-var GAS_WEBAPP_URL = 'REPLACE_WITH_YOUR_GAS_WEBAPP_URL';
+var GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzAEXxhtMhWbmEIhpHiBxxCXfU0vwEjQUch31maj7vinHYbYQNVVh9y3EqbL3s9T9AOww/exec';
 
 class IdiomManager {
     constructor() {
