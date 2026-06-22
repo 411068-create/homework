@@ -244,16 +244,21 @@ class IdiomManager {
     }
 
     async fetchIdiomMeaning(idiom) {
+        // 使用 Moedict 詞條資料庫，詞彙量較大，適合查成語
         try {
-            var response = await fetch('https://api.api-ninjas.com/v1/idiom?name=' + encodeURIComponent(idiom));
+            var url = 'https://www.moedict.tw/uni/' + encodeURIComponent(idiom) + '.json';
+            var response = await fetch(url);
             if (response.ok) {
                 var data = await response.json();
-                if (data && data[0] && data[0].definition) {
-                    return data[0].definition;
+                if (data && data.heteronyms && data.heteronyms.length > 0) {
+                    var defs = data.heteronyms[0].definitions;
+                    if (defs && defs.length > 0) {
+                        return defs[0].def;
+                    }
                 }
             }
         } catch (e) {
-            console.log('方案 1 失敗');
+            console.log('Moedict 方案失敗', e);
         }
 
         var localDatabase = await this.getLocalIdiomDatabase();
