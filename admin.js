@@ -244,7 +244,7 @@ class IdiomManager {
     }
 
     async fetchIdiomMeaning(idiom) {
-        // 使用 Moedict 詞條資料庫，詞彙量較大，適合查成語
+        // 方案 1：使用 Moedict 詞條資料庫
         try {
             var url = 'https://www.moedict.tw/uni/' + encodeURIComponent(idiom) + '.json';
             var response = await fetch(url);
@@ -261,6 +261,32 @@ class IdiomManager {
             console.log('Moedict 方案失敗', e);
         }
 
+        // 方案 2：使用中文維基百科摘要，詞彙量更大
+        try {
+            var wikiUrl =
+                'https://zh.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&explaintext=1&titles=' +
+                encodeURIComponent(idiom) +
+                '&origin=*';
+            var wikiResp = await fetch(wikiUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+            if (wikiResp.ok) {
+                var wikiData = await wikiResp.json();
+                if (wikiData && wikiData.query && wikiData.query.pages) {
+                    var pages = wikiData.query.pages;
+                    for (var pageId in pages) {
+                        if (pages.hasOwnProperty(pageId)) {
+                            var page = pages[pageId];
+                            if (page && page.extract && page.extract.length > 0) {
+                                return page.extract;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('Wikipedia 方案失敗', e);
+        }
+
+        // 方案 3：本地詞庫備援
         var localDatabase = await this.getLocalIdiomDatabase();
         if (localDatabase[idiom]) {
             return localDatabase[idiom];
