@@ -22,24 +22,28 @@ class IdiomManager {
     }
 
     setupEventListeners() {
-        document.getElementById('addForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.addIdiom();
-        });
+        const addForm = document.getElementById('addForm');
+        const autoFillBtn = document.getElementById('autoFillBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
 
-        document.getElementById('autoFillBtn').addEventListener('click', () => {
-            this.autoFillMeaning();
-        });
+        if (addForm) {
+            addForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.addIdiom();
+            });
+        }
 
-        document.getElementById('cancelBtn').addEventListener('click', () => {
-            this.cancelEdit();
-        });
+        if (autoFillBtn) {
+            autoFillBtn.addEventListener('click', () => {
+                this.autoFillMeaning();
+            });
+        }
 
-        // 監聽編輯模式的更新
-        const form = document.getElementById('addForm');
-        form.addEventListener('input', () => {
-            // 輸入時自動顯示/隱藏取消按鈕邏輯在editIdiom中處理
-        });
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                this.cancelEdit();
+            });
+        }
     }
 
     addIdiom() {
@@ -354,5 +358,11 @@ class IdiomManager {
     }
 }
 
-// 初始化管理應用
-const manager = new IdiomManager();
+// 等待 DOM 完全加載後初始化應用
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const manager = new IdiomManager();
+    });
+} else {
+    const manager = new IdiomManager();
+}

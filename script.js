@@ -31,14 +31,31 @@ class IdiomCardApp {
 
     setupEventListeners() {
         const card = document.getElementById('card');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 卡片翻轉
         if (card) {
             card.addEventListener('click', () => this.flipCard());
         }
 
-        document.getElementById('nextBtn')?.addEventListener('click', () => this.nextCard());
-        document.getElementById('prevBtn')?.addEventListener('click', () => this.prevCard());
-        document.getElementById('shuffleBtn')?.addEventListener('click', () => this.shuffle());
-        document.getElementById('resetBtn')?.addEventListener('click', () => this.reset());
+        // 翻頁按鈕
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextCard());
+        }
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.prevCard());
+        }
+
+        // 控制按鈕
+        if (shuffleBtn) {
+            shuffleBtn.addEventListener('click', () => this.shuffle());
+        }
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => this.reset());
+        }
 
         // 鍵盤快捷鍵
         document.addEventListener('keydown', (e) => {
@@ -54,26 +71,36 @@ class IdiomCardApp {
     }
 
     displayCard() {
+        const cardContainer = document.querySelector('.card-container');
+        const controls = document.querySelector('.controls');
+        const cardInfo = document.querySelector('.card-info');
+        const emptyState = document.getElementById('emptyState');
+
         if (this.idioms.length === 0) {
-            document.querySelector('.card-container')?.style.display = 'none';
-            document.querySelector('.controls')?.style.display = 'none';
-            document.querySelector('.card-info')?.style.display = 'none';
-            document.getElementById('emptyState')?.style.display = 'block';
+            if (cardContainer) cardContainer.style.display = 'none';
+            if (controls) controls.style.display = 'none';
+            if (cardInfo) cardInfo.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'block';
             return;
         }
 
-        document.querySelector('.card-container')?.style.display = 'block';
-        document.querySelector('.controls')?.style.display = 'flex';
-        document.querySelector('.card-info')?.style.display = 'block';
-        document.getElementById('emptyState')?.style.display = 'none';
+        if (cardContainer) cardContainer.style.display = 'block';
+        if (controls) controls.style.display = 'flex';
+        if (cardInfo) cardInfo.style.display = 'block';
+        if (emptyState) emptyState.style.display = 'none';
 
         const current = this.idioms[this.currentIndex];
-        document.getElementById('idiom').textContent = current.idiom;
-        document.getElementById('meaning').textContent = current.meaning;
-        document.getElementById('cardCounter').textContent = `${this.currentIndex + 1} / ${this.idioms.length}`;
+        const idiomEl = document.getElementById('idiom');
+        const meaningEl = document.getElementById('meaning');
+        const cardCounterEl = document.getElementById('cardCounter');
+        const cardSourceEl = document.getElementById('cardSource');
 
-        if (current.source) {
-            document.getElementById('cardSource').textContent = `來源: ${current.source}`;
+        if (idiomEl) idiomEl.textContent = current.idiom;
+        if (meaningEl) meaningEl.textContent = current.meaning;
+        if (cardCounterEl) cardCounterEl.textContent = `${this.currentIndex + 1} / ${this.idioms.length}`;
+
+        if (current.source && cardSourceEl) {
+            cardSourceEl.textContent = `來源: ${current.source}`;
         }
 
         this.isFlipped = false;
@@ -128,6 +155,13 @@ class IdiomCardApp {
     }
 }
 
-// 初始化應用
-const app = new IdiomCardApp();
-IdiomCardApp.setupStorageListener(app);
+// 等待 DOM 完全加載後初始化應用
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const app = new IdiomCardApp();
+        IdiomCardApp.setupStorageListener(app);
+    });
+} else {
+    const app = new IdiomCardApp();
+    IdiomCardApp.setupStorageListener(app);
+}
