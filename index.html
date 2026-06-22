@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文成語卡片 - 背誦練習</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>成語卡片</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="prevBtn">← 上一張</button>
+                <button class="btn btn-secondary" id="nextBtn">下一張 →</button>
+                <a href="admin.html" class="btn btn-primary">管理成語</a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="card-container">
+                <div class="card" id="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-content">
+                                <p id="idiom" class="idiom-text">成語</p>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-content">
+                                <p id="meaning" class="meaning-text">解釋</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-info">
+                <p id="cardCounter">1 / 1</p>
+                <p id="cardSource" class="source-text"></p>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" id="shuffleBtn">🔀 隨機排序</button>
+                <button class="btn btn-secondary" id="resetBtn">🔄 重新開始</button>
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>還沒有任何成語。請先到管理頁面新增成語！</p>
+                <a href="admin.html" class="btn btn-primary">前往管理頁面</a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

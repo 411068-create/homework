@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成語管理 - 新增和編輯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>成語管理</h1>
+            <a href="index.html" class="btn btn-primary">← 回到背卡</a>
+        </header>
+
+        <main class="main-content">
+            <div class="admin-section">
+                <div class="form-container">
+                    <h2>新增成語</h2>
+                    <form id="addForm">
+                        <div class="form-group">
+                            <label for="idiomInput">成語：</label>
+                            <input 
+                                type="text" 
+                                id="idiomInput" 
+                                placeholder="例如：臥虎藏龍" 
+                                required
+                                maxlength="50"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="meaningInput">解釋：</label>
+                            <textarea 
+                                id="meaningInput" 
+                                placeholder="例如：比喻文人倜儻不羈，懷才不遇。"
+                                rows="4"
+                                maxlength="500"
+                            ></textarea>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary" id="autoFillBtn">
+                                ✨ 自動填入解釋
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                ➕ 新增成語
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                                ❌ 取消編輯
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="list-container">
+                    <h2>成語列表</h2>
+                    <div id="idiomList" class="idiom-list">
+                        <p class="empty-message">還沒有任何成語</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 提示框 -->
+    <div id="notification" class="notification"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
